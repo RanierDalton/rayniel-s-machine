@@ -35,9 +35,15 @@
 
     ],
     "logTentativas":[
-
+        {
+            "nome":"Rafael",
+            "nivel":"fácil",
+            "acertos":3,
+            "perguntasAcertou":[1,2,3],
+            "hrIniciou":"9:30:45",
+            "hrTerminou":"9:40:33",
+            "dtIniciou":"2024-09-15",
+            "dtTerminou":"2024-09-15"
+        }
     ]
-
-        
-
 }
