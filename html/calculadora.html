@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Importação da bliblioteca de estilização CSS Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="../style/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Bases</title>
+</head>
+
+<body>
+    <!-- navbar do site -->
+    <nav id="navBar" class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <a class="navbar-brand" href="#navBar">RayNiel's Machine</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="conversor.html">Conversor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="calculadora.html">Calculadora <i class="sr-only">(atual)</i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="quiz.html">Quiz</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- criar uma div pai-->
+    <div class="container-lg">
+        <!-- div do conteúdo do conversor -->
+        <div id="calculadora" class="container">
+            <center>
+                <!-- titulo -->
+                <h1>Calculadora de Bases</h1>
+                <br><br>
+
+                <!-- instrução -->
+                <h4>Informe o primeiro número e a sua base:</h4>
+
+                <!-- input do numero escolhido pelo user -->
+                <input class="form-control" id="iptNumero1" type="text" placeholder="Digite o primeiro valor para calcular"
+                    autofocus required="">
+                <br>
+
+                <!-- lista de opções para serem selecionadas -->
+                <select class="form-select" id="slctBasePrimeiroNumero">
+                    <option value="" disabled selected hidden>Selecione a base do primeiro número</option>
+                    <option value="10">Decimal</option>
+                    <option value="8">Octal</option>
+                    <option value="2">Binário</option>
+                    <option value="16">Hexadecimal</option>
+                </select>
+                <br><br>
+
+                <!-- instrução -->
+                <h4>Informe o segundo número e a sua base</h4>
+
+                <!-- input do numero escolhido pelo user -->
+                <input class="form-control" id="iptNumero2" type="text" placeholder="Digite o segundo valor para calcular"
+                    autofocus required="">
+                <br>
+
+                <!-- lista de opções para serem selecionadas -->
+                <select class="form-select" id="slctBaseSegundoNumero" >
+                    <option value="" disabled selected hidden>Selecione a base do segundo número</option>
+                    <option value="10">Decimal</option>
+                    <option value="8">Octal</option>
+                    <option value="2">Binário</option>
+                    <option value="16">Hexadecimal</option>
+                </select>
+                <br><br>
+
+                <!-- instrução -->
+                <h4>Qual operação deseja realizar?</h4>
+
+                <!-- lista de opções para serem selecionadas -->
+                <select class="form-select" id="slctOperacaoDesejada">
+                    <option value="+">Adição</option>
+                    <option value="-">Subtração</option>
+                    <option value="*">Multiplicação</option>
+                    <option value="/">Divisão</option>
+                    <option value="**">Exponenciação</option>
+                    <option value="1">Todas as operações</option>
+                </select>
+                <br><br>
+
+                <!-- instrução -->
+                <h4>Qual a base que deve ser retornada na saída? </h4>
+
+                <!-- lista de opções para serem selecionadas -->
+                <select class="form-select" id="baseOutput">
+                        <option value="10">Decimal</option>
+                        <option value="8">Octal</option>
+                        <option value="2">Binário</option>
+                        <option value="16">Hexadecimal</option> 
+                </select>
+                <br><br>
+
+                <!-- Botão para calcular -->
+                <button class="btn btn-success btn-lg" onclick="calcular()">Realizar Cálculo</button>
+                <br>
+
+                <!-- div de output -->
+                <div id="divOutput"></div>
+            </center>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<script>
+    const listaBin = ["0","1"];
+    const listaOct = ["0","1","2","3","4","5","6","7"];
+    const listaDec = ["0","1","2","3","4","5","6","7","8","9"];
+    const listaHex = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
+    
+    function calcular() {
+        // Resetando o Resultado da Div Output
+        divOutput.innerHTML = ``;
+        // Coletar oos numeros inseridos pelo user
+        let verificarPrimeiroNumero = iptNumero1.value;
+        let verificarSegundoNumero = iptNumero2.value;
+
+        // vamos dividir i input em uma array
+        var arrayInputPrimeiroNumero = verificarPrimeiroNumero.split("");
+        var arrayInputSegundoNumero= verificarSegundoNumero.split("");
+
+        if (arrayInputPrimeiroNumero[0] == "-" || arrayInputSegundoNumero[0] == "-" ){ // caso os numeros sejam negativos
+            // retirar o símbolo de - das arrays para nn ter mais conflitos na parte das validações
+            arrayInputPrimeiroNumero = arrayInputPrimeiroNumero.filter((element) => element !== "-");
+            arrayInputSegundoNumero = arrayInputSegundoNumero.filter((element) => element !== "-");
+        } 
+
+        // Coletar as bases dos numeros escolhidos
+        var basePrimeroNumero = Number(slctBasePrimeiroNumero.value);
+        var baseSegundoNumero = Number(slctBaseSegundoNumero.value);
+
+        // Ver se é "0" ou "1"
+        // Tentar encontrar um número que não seja "0" e "1" (listaBin) e retornando a quantidade de elementos que não estão na lista - Caso esteja tudo em ordem, a variável será 0
+        var arrayInputBinPrimeiroNumero = arrayInputPrimeiroNumero.filter((element) => !listaBin.includes(element)).length;
+        var arrayInputBinSegundoNumero = arrayInputSegundoNumero.filter((element) => !listaBin.includes(element)).length;
+
+        // Ver se é entre "0" e "7"
+        // Teigito é um elemento, assim tentando encontrar um número que não esteja entre "0" e "7" (listaOct) e retornando a quantidade de elementos que não estão na lista - Caso esteja tudo em ordem, a variável será 0
+        var arrayInputOctPrimeiroNumero = arrayInputPrimeiroNumero.filter((element) => !listaOct.includes(element)).length;
+        var arrayInputOctSegundoNumero  = arrayInputSegundoNumero.filter((element) => !listaOct.includes(element)).length;
+
+        // Verificar se é entre "0" e "9"
+        // Teigito é um elemento, assim tentando encontrar um número que não esteja entre "0" e "9" (listaDec) e retornando a quantidade de elementos que não estão na lista - Caso esteja tudo em ordem, a variável será 0
+        var arrayInputDecPrimeiroNumero = arrayInputPrimeiroNumero.filter((element) => !listaDec.includes(element)).length;
+        var arrayInputDecSegundoNumero  = arrayInputSegundoNumero.filter((element) => !listaDec.includes(element)).length;
+
+        // Ver se é entre "0" e "f"(15)
+        // Teigito é um elemento, assim tentando encontrar um número que não esteja entre "0" e "f" (listaHex) e retornando a quantidade de elementos que não estão na lista - Caso esteja tudo em ordem, a variável será 0
+        var arrayInputHexPrimeiroNumero = arrayInputPrimeiroNumero.filter((element) => !listaHex.includes(element)).length;
+        var arrayInputHexSegundoNumero  = arrayInputSegundoNumero.filter((element) => !listaHex.includes(element)).length;
+
+        if (verificarPrimeiroNumero == "" || verificarSegundoNumero == "") { // caso o usuário não tenha inserido nenhum valor
+            alert('Informe os numeros para realizar o cálculo, um dos campos está vazio!');
+        } else if(basePrimeroNumero == 0 || baseSegundoNumero == 0){// caso o usuário não tenha escolhido nenhuma base dos numeros que foram informados
+            alert('Selecione as bases dos numeros para realizar o cálculo!');
+        } else if ((basePrimeroNumero != 16 && isNaN(Number(verificarPrimeiroNumero))) || (baseSegundoNumero != 16 && isNaN(Number(verificarSegundoNumero)))){ // caso a base que o user escolheu seja diferente de 16 e tenha algum número ou caracter especial nele
+            alert(`A base ${basePrimeroNumero} e/ou ${baseSegundoNumero} não possuem letras ou caracteres especiais!`);
+        } else if((basePrimeroNumero==2 && arrayInputBinPrimeiroNumero > 0) || (baseSegundoNumero==2 && arrayInputBinSegundoNumero > 0)) { // caso a base que o user escolheu seja 2 e tenha algum numero que seja diferente de 0 e 1
+            alert(`A base Binária não possui caracteres diferentes que 0 e 1!`);
+        } else if((basePrimeroNumero==8 && arrayInputOctPrimeiroNumero > 0) || (baseSegundoNumero==8 && arrayInputOctSegundoNumero > 0)) {// caso a base que o user escolheu seja 8 e tenha algum numero que seja diferente de 0 à 7
+            alert(`A base Octal não possui caracteres que não estejam entre 0 e 7!`);
+        } else if((basePrimeroNumero==16 && arrayInputHexPrimeiroNumero > 0) || (baseSegundoNumero==16 && arrayInputHexSegundoNumero > 0)) {// caso a base que o user escolheu seja 16 e tenha algum numero que seja diferente de 0 à 9 e A à F
+            alert(`A base Hexadecimal não possui caracteres que não estejam entre 0 e f!`);
+        } else if((basePrimeroNumero==10 && arrayInputDecPrimeiroNumero > 0) || (baseSegundoNumero==10 && arrayInputDecSegundoNumero > 0)) {// caso a base que o user escolheu seja 10 e tenha algum numero que seja diferente de 0 à 9
+            alert(`A base Decimal não possui caracteres que não estejam entre 0 e 9!`);
+        } else{  // Caso passe das verificações            
+            // Transformando qualquer base de amboas os números em decimal
+            var primeiroNumeroBaseDecimal = parseInt(verificarPrimeiroNumero, basePrimeroNumero);
+            var segundoNumeroBaseDecimal = parseInt(verificarSegundoNumero, baseSegundoNumero);
+
+            var txtBaseEscolhidaPrimeiroNumero = slctBasePrimeiroNumero.options[slctBasePrimeiroNumero.selectedIndex].text;
+            var txtBaseEscolhidaSegundoNumero = slctBaseSegundoNumero.options[slctBaseSegundoNumero.selectedIndex].text;
+
+            // Coletar qual operação o user deseja realizar
+            var operacaoDesejada = slctOperacaoDesejada.value; 
+
+            // Coletar o valor escolhido pelo user para mostrar as bases desejadas
+            var baseConverter = Number(baseOutput.value);
+            // Coletar o nome da Base escolhida
+            var txtBaseEscolhidaConverter = baseOutput.options[baseOutput.selectedIndex].text;
+
+            if (operacaoDesejada == "1"){
+                // realizar todas as operações
+                var resultadoAdicao = primeiroNumeroBaseDecimal + segundoNumeroBaseDecimal;
+                var resultadoSubtracao = primeiroNumeroBaseDecimal - segundoNumeroBaseDecimal;
+                var resultadoMultiplicacao = primeiroNumeroBaseDecimal * segundoNumeroBaseDecimal;
+                var resultadoDivisao = primeiroNumeroBaseDecimal / segundoNumeroBaseDecimal;
+                var resultadoExponenciacao = primeiroNumeroBaseDecimal / segundoNumeroBaseDecimal;
+
+                // guardar em um objeto/dicionário
+                dicionarioResultados = {
+                    'Adição':resultadoAdicao,
+                    'Subtração':resultadoSubtracao,
+                    'Multiplicação':resultadoMultiplicacao,
+                    'Divisão':resultadoDivisao,
+                    'Exponenciação':resultadoExponenciacao,
+                };
+
+                // converter e informar cada um dos resultados de acordo com os numeros e bases informadas
+                for (let [operacao, resultado] of Object.entries(dicionarioResultados)){
+                    resultado = resultado.toString(baseConverter);
+                    divOutput.innerHTML += `
+                        <h5>O resultado da <b>${operacao}</b>  dos valores <b>${verificarPrimeiroNumero}</b>  (em <b>${txtBaseEscolhidaPrimeiroNumero}</b> ) e <b>${verificarSegundoNumero}</b> (em <b>${txtBaseEscolhidaSegundoNumero})</b> é <b>${resultado}</b> (em <b>${txtBaseEscolhidaConverter}</b>).</h5>
+                        <br>  
+                    `;
+                }
+                divOutput.innerHTML += `<br>`;
+                // setta um espaço em relação ao topo da página para uma estilização
+                calculadora.style.marginTop = "420px";
+
+            } else {
+                // guardar o valor da operação que foi selecionada no select
+                var txtOperacaoDesejada = `${slctOperacaoDesejada.options[slctOperacaoDesejada.selectedIndex].text}`;
+                // vai calcular o resultado com os dois números e a operação aritmética selecionados
+                var resultado = eval(`${primeiroNumeroBaseDecimal} ${operacaoDesejada} ${segundoNumeroBaseDecimal}`);
+                // converter para a base de output em que o user escolheu
+                resultado = resultado.toString(baseConverter);
+        
+                // mostra a mensagem com todas as informações
+                divOutput.innerHTML = `
+                    <h5>O resultado da <b>${txtOperacaoDesejada}</b> dos valores <b>${verificarPrimeiroNumero}</b> (em <b>${txtBaseEscolhidaPrimeiroNumero}</b>) e <b>${verificarSegundoNumero}</b> (em <b>${txtBaseEscolhidaSegundoNumero}</b> )</b> é <b>${resultado} (em <b>${txtBaseEscolhidaConverter}</b>).</h5>
+                    <br><br>    
+                `;
+                // setta um espaço em relação ao topo da página para uma estilização
+                calculadora.style.marginTop = "50px";
+            }
+        }
+    }
+</script>
