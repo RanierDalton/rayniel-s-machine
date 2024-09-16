@@ -8,7 +8,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="../style/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz</title>
+    <title>CRUD</title>
 </head>
 
 <body>
@@ -27,13 +27,13 @@
                     <a class="nav-link" href="conversor.html">Conversor</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="calculadora.html">Calculadora</a>
+                    <a class="nav-link" href="calculadora.html">Calculadora <i class="sr-only">(atual)</i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="quiz.html">Quiz <i class="sr-only">(atual)</i></a>
+                    <a class="nav-link" href="quiz.html">Quiz</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="crud.html">CRUD</a>
+                    <a class="nav-link" href="crud.html">CRUD <i class="sr-only">(atual)</i></a>
                 </li>
             </ul>
         </div>
@@ -42,22 +42,27 @@
     <!-- criar uma div pai-->
     <div class="container-lg">
         <!-- div do conteúdo do conversor -->
-        <div class="container">
-            <center id="conteudo">
+        <div id="calculadora" class="container">
+            <center>
                 <!-- titulo -->
-                <h1>Quiz de Sistemas Numéricos</h1>
+                <h1>CRUD</h1>
                 <br><br>
 
-                <!-- descrição -->
-                <h4>Esse Quiz se trata sobre 5 perguntas sobre conversão de diferentes bases e diversos cálculos (adição, subtração, divisão e multiplicação).</h4>
+                <!-- instrução -->
+                <h4>Qual informação gostaria de acessar?</h4>
+
+                <!-- lista de opções para serem selecionadas -->
+                <select onclick="opcaoDadosSelecionado()" class="form-select" id="slctOpcao">
+                    <option value="perguntas">Perguntas</option>
+                    <option value="logs">Logs Respostas</option>
+                </select>
                 <br><br>
-                
-                <!-- Botão Inicar o Quiz, setando para a função a primeira pergunta por default (valor 0)-->
-                <button onclick="carregarPergunta(0);" id="getQuiz" class="btn btn-success btn-lg">Iniciar Quiz</button>
-                <br>
+
+                <!-- div de output -->
+                <div id="conteudo"></div>
             </center>
         </div>
     </div>
-    <script src="../js/quiz.js"></script>
+    <script src="../js/crud.js"></script>
 </body>
 </html>

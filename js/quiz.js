@@ -1,5 +1,5 @@
-const URL_API = "https://my-json-server.typicode.com/RanierDalton/api-quiz/db";
-const URL_API_LOG = "https://my-json-server.typicode.com/RanierDalton/api-quiz/logTentativas";
+const URL_API_LOG = "https://api.jsonbin.io/v3/b/66e7555aad19ca34f8a69959";
+const URL_API_PERGUNTAS = "https://api.jsonbin.io/v3/b/66e7557ce41b4d34e430d9f6";
 
 // Mensagem padrão do Menu inicial
 const CONTEUDO_MENU_INICIAL = `
@@ -60,7 +60,7 @@ const CONTEUDO_BOTAO_VOLTAR_MENU = `
 `;
 
 let dados = [];
-let log = [];
+let log = '';
 let respostas = [];
 let indexPerguntasAcertadas = [];
 
@@ -80,7 +80,7 @@ async function getLogQuiz(){
         }
     };
 
-    reqGET.open("GET", "https://api.jsonbin.io/v3/b/66e7555aad19ca34f8a69959", true);
+    reqGET.open("GET", URL_API_LOG, true);
     reqGET.setRequestHeader("X-Master-Key", "$2a$10$BAvkaunKerxsC0ue.QRXBua6Sizg.U.e3oD1z6Ud7ykN4nL9AEMPa");
     reqGET.send();
 }
@@ -90,7 +90,7 @@ function postLogQuiz(log){
 
     reqPOST.onreadystatechange = () => {};
 
-    reqPOST.open("PUT", "https://api.jsonbin.io/v3/b/66e7555aad19ca34f8a69959", true);
+    reqPOST.open("PUT", URL_API_LOG, true);
     reqPOST.setRequestHeader("Content-Type", "application/json");
     reqPOST.setRequestHeader("X-Master-Key", "$2a$10$BAvkaunKerxsC0ue.QRXBua6Sizg.U.e3oD1z6Ud7ykN4nL9AEMPa");
     reqPOST.setRequestHeader("X-Bin-Versioningy", "true");
@@ -99,99 +99,86 @@ function postLogQuiz(log){
 
 
 async function getPerguntasQuiz() {
-        let req = new XMLHttpRequest();
-
-        req.onreadystatechange = () => {
-            if (req.readyState == XMLHttpRequest.DONE) {
-                coletarDadosPerguntas(JSON.parse(req.responseText).record);
-            }
+    let req = new XMLHttpRequest();
+    req.onreadystatechange = () => {
+        if (req.readyState == XMLHttpRequest.DONE) {
+            coletarDadosPerguntas(JSON.parse(req.responseText).record);
         }
-
-        req.open("GET", "https://api.jsonbin.io/v3/b/66e7557ce41b4d34e430d9f6", true);
-        req.setRequestHeader("X-Master-Key", "$2a$10$BAvkaunKerxsC0ue.QRXBua6Sizg.U.e3oD1z6Ud7ykN4nL9AEMPa");
-        req.send();
+    }
+    req.open("GET", URL_API_PERGUNTAS, true);
+    req.setRequestHeader("X-Master-Key", "$2a$10$BAvkaunKerxsC0ue.QRXBua6Sizg.U.e3oD1z6Ud7ykN4nL9AEMPa");
+    req.send();
 }
 
  function carregarPergunta(numPergunta) {
-                    if (hrIniciou == 0){ // Caso o horario esteja zerado (ou seja a primeira pergunta do quiz)
+    if (hrIniciou == 0){ // Caso o horario esteja zerado (ou seja a primeira pergunta do quiz
+        // Settar as datas completas
+        dtIniciou = new Date();
+        hrIniciou = new Date();
+        nome = prompt("Antes de começar o quiz, informe o seu nome:");
+        // filtra de acordo com somente as Horas(horas, minutos e segundos) e a data(Ano, mes e dia)
+        dtIniciou = `${dtIniciou.getFullYear()}-${dtIniciou.getMonth()}-${dtIniciou.getDate()}`;
+        hrIniciou = `${hrIniciou.getHours()}:${hrIniciou.getMinutes()}:${hrIniciou.getSeconds()}`;
+    }  
+    // o numero da pergunta atual é o que foi atribuido a esta função
+    numeroPerguntaAtual = numPergunta;
+    // Informar ao user qual questão está
+    conteudo.innerHTML = `
+        <h1 id="titulo">${numeroPerguntaAtual + 1}ª Pergunta</h1>
+        <br>
+        <h4 id="enunciado">${dados[0][numeroPerguntaAtual].enunciado}</h4>
+        <br>
+    `;
+    
+    for (let opcao of dados[0][numeroPerguntaAtual].opcoes) {// fazer um loop para listar todas as opções das dados.perguntas
+        if (respostas[numeroPerguntaAtual]==undefined){
+            // Só aparece a opção sem estar checkado
+            conteudo.innerHTML += `
+                <input type="radio" id="opt${opcao}" name="resposta" value="${opcao}">
+                <label for="${opcao}">${opcao}</label><br>
+            `;
+        } else if (opcao == respostas[numeroPerguntaAtual].resposta) { // caso a opção seja alguma em que o usuario tenha sleecionado anteriormente
+            // Vai aparecer como checkado
+            conteudo.innerHTML += `
+                <input checked type="radio" id="opt${opcao}" name="resposta" value="${opcao}">
+                <label for="${opcao}">${opcao}</label><br>
+            `;
+        } else {
+            // Só aparece a opção sem estar checkado
+            conteudo.innerHTML += `
+                <input type="radio" id="opt${opcao}" name="resposta" value="${opcao}">
+                <label for="${opcao}">${opcao}</label><br>
+            `;
+        }     
+    }
+    // parte das mudanças de páginas e ações do user
+    if (numeroPerguntaAtual === (Object.keys(dados[0]).length - 1)) { // Caso seja a ultima pergunta da lista de dados.perguntas
+        // vai mostrar o botoes Voltar e Finalizar Quiz, por ele estar na última pergunta, não precisa avançar mais questão
+        conteudo.innerHTML += CONTEUDO_BOTAO_ULTIMA_PERGUNTA;
+        // Vai adicionar um evento no botão de finalizar Quiz, onde ao clicar nele
+        document.getElementById("finalizarQuiz").addEventListener("click", function(){coletarResposta()});
         
-                        // Settar as datas completas
-                        dtIniciou = new Date();
-                        hrIniciou = new Date();
-
-                        nome = prompt("Antes de começar o quiz, informe o seu nome:");
-            
-                        // filtra de acordo com somente as Horas(horas, minutos e segundos) e a data(Ano, mes e dia)
-                        dtIniciou = `${dtIniciou.getFullYear()}-${dtIniciou.getMonth()}-${dtIniciou.getDate()}`;
-                        hrIniciou = `${hrIniciou.getHours()}:${hrIniciou.getMinutes()}:${hrIniciou.getSeconds()}`;
-                    }   
-        
-                    // o numero da pergunta atual é o que foi atribuido a esta função
-                    numeroPerguntaAtual = numPergunta;
-                    // Informar ao user qual questão está
-                    conteudo.innerHTML = `
-                        <h1 id="titulo">${numeroPerguntaAtual + 1}ª Pergunta</h1>
-                        <br>
-                        <h4 id="enunciado">${dados[0][numeroPerguntaAtual].enunciado}</h4>
-                        <br>
-                    `;
-                    
-                    for (let opcao of dados[0][numeroPerguntaAtual].opcoes) {// fazer um loop para listar todas as opções das dados.perguntas
-            
-                        if (respostas[numeroPerguntaAtual]==undefined){
-                            // Só aparece a opção sem estar checkado
-                            conteudo.innerHTML += `
-                                <input type="radio" id="opt${opcao}" name="resposta" value="${opcao}">
-                                <label for="${opcao}">${opcao}</label><br>
-                            `;
-                        } else if (opcao == respostas[numeroPerguntaAtual].resposta) { // caso a opção seja alguma em que o usuario tenha sleecionado anteriormente
-                            // Vai aparecer como checkado
-                            conteudo.innerHTML += `
-                                <input checked type="radio" id="opt${opcao}" name="resposta" value="${opcao}">
-                                <label for="${opcao}">${opcao}</label><br>
-                            `;
-                        } else {
-                            // Só aparece a opção sem estar checkado
-                            conteudo.innerHTML += `
-                                <input type="radio" id="opt${opcao}" name="resposta" value="${opcao}">
-                                <label for="${opcao}">${opcao}</label><br>
-                            `;
-                        }     
-                    }
-                    // parte das mudanças de páginas e ações do user
-                    if (numeroPerguntaAtual === (Object.keys(dados[0]).length - 1)) { // Caso seja a ultima pergunta da lista de dados.perguntas
-                        // vai mostrar o botoes Voltar e Finalizar Quiz, por ele estar na última pergunta, não precisa avançar mais questão
-                        conteudo.innerHTML += CONTEUDO_BOTAO_ULTIMA_PERGUNTA;
-            
-                        // Vai adicionar um evento no botão de finalizar Quiz, onde ao clicar nele
-                        document.getElementById("finalizarQuiz").addEventListener("click", function(){coletarResposta()});
-                        
-                        // Add um outro evento, q qnd o usuário clicar no msm btn que o evento anterior (não precisa ser novamente pq o processamento é rápido para captar os dosi eventos), ele vai finalizar o Quiz
-                        document.getElementById("finalizarQuiz").addEventListener("click", function(){finalizarQuiz()});
-                        // Add um evento, qnd o usuário clicar nesse btn, ele vai voltar uma pergunta
-                        document.getElementById("voltarPergunta").addEventListener("click", function(){voltarPergunta();});
-        
-                    } else if (numeroPerguntaAtual == 0) { // caso esteja na primeira questão
-                        // vai mostrar apenas o botão para a proxima pergunta, pois é a primeira
-                        conteudo.innerHTML += CONTEUDO_BOTAO_PRIMEIRA_PERGUNTA;
-        
-                        // Vai adicionar um evento no botão de finalizar Quiz, onde ao clicar nele
-                        document.getElementById("proxPergunta").addEventListener("click", function(){coletarResposta()});
-        
-                        // Add um evento, onde, qnd o usuário clicar nesse btn, ele vai avança uma pergunta
-                        document.getElementById("proxPergunta").addEventListener("click", function(){proxPergunta();});
-                    } else { // caso não seja uma questão de extremos
-                        // vai mostrar o btn de prox e voltar pergunta
-                        conteudo.innerHTML += CONTEUDO_BOTAO_DEFAULT_PERGUNTA;
-        
-                        const radios = document.querySelectorAll('input[name="resposta"]');  
-                        document.getElementById("proxPergunta").addEventListener("click", function(){coletarResposta()});
-        
-                        // Add um evento, onde, qnd o usuário clicar nesse btn, ele vai avança uma pergunta
-                        document.getElementById("proxPergunta").addEventListener("click", function(){proxPergunta();});
-                        // Add um evento, qnd o usuário clicar nesse btn, ele vai voltar uma pergunta
-                        document.getElementById("voltarPergunta").addEventListener("click", function(){voltarPergunta();});     
-                    }
+        // Add um outro evento, q qnd o usuário clicar no msm btn que o evento anterior (não precisa ser novamente pq o processamento é rápido para captar os dosi eventos), ele vai finalizar o Quiz
+        document.getElementById("finalizarQuiz").addEventListener("click", function(){finalizarQuiz()});
+        // Add um evento, qnd o usuário clicar nesse btn, ele vai voltar uma pergunta
+        document.getElementById("voltarPergunta").addEventListener("click", function(){voltarPergunta();})
+    } else if (numeroPerguntaAtual == 0) { // caso esteja na primeira questão
+        // vai mostrar apenas o botão para a proxima pergunta, pois é a primeira
+        conteudo.innerHTML += CONTEUDO_BOTAO_PRIMEIRA_PERGUNTA
+        // Vai adicionar um evento no botão de finalizar Quiz, onde ao clicar nele
+        document.getElementById("proxPergunta").addEventListener("click", function(){coletarResposta()})
+        // Add um evento, onde, qnd o usuário clicar nesse btn, ele vai avança uma pergunta
+        document.getElementById("proxPergunta").addEventListener("click", function(){proxPergunta();});
+    } else { // caso não seja uma questão de extremos
+        // vai mostrar o btn de prox e voltar pergunta
+        conteudo.innerHTML += CONTEUDO_BOTAO_DEFAULT_PERGUNTA
+        const radios = document.querySelectorAll('input[name="resposta"]');  
+        document.getElementById("proxPergunta").addEventListener("click", function(){coletarResposta()});
+        // Add um evento, onde, qnd o usuário clicar nesse btn, ele vai avança uma pergunta
+        document.getElementById("proxPergunta").addEventListener("click", function(){proxPergunta();});
+        // Add um evento, qnd o usuário clicar nesse btn, ele vai voltar uma pergunta
+        document.getElementById("voltarPergunta").addEventListener("click", function(){voltarPergunta();});     
+    }
 }
 
 function coletarResposta(){
@@ -361,10 +348,8 @@ function coletarDadosPerguntas(dadosColetados){
 }
 
 function coletarDadosLogs(dadosLog){
-    log.push(dadosLog);
+    log = dadosLog;
 }
 
 getPerguntasQuiz();
 getLogQuiz();
-
-
