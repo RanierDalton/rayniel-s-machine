@@ -9,12 +9,12 @@ let dadosLogs = '';
 getPerguntasQuiz();
 getLogQuiz();
 
-function opcaoDadosSelecionado(){
+function opcaoDadosSelecionado(num){
     var opcaoSelecionada = document.getElementById("slctOpcao").value;
     conteudo.innerHTML ="";
     
 
-    if (opcaoSelecionada == "perguntas"){
+    if (num == 1 || opcaoSelecionada == "1"){
         console.log(dadosPerguntas);
         var dadosTabela = '';
 
@@ -49,7 +49,7 @@ function opcaoDadosSelecionado(){
                 </tbody>
             </table>
         `;
-    } else if (opcaoSelecionada == "logs"){
+    } else if (num == 2 || opcaoSelecionada == "2"){
 
         var dadosTabela = '';
 
@@ -112,7 +112,7 @@ function mostrarFiltro(){
               <div class="input-group-prepend">
                 <label>
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input">
+                        <input type="checkbox" value="0" class="checkAcertos" aria-label="Checkbox for following text input">
                     </div>
                     <b>0</b>
                 </label>
@@ -121,7 +121,7 @@ function mostrarFiltro(){
               <div class="input-group-prepend">
                 <label>
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input">
+                        <input type="checkbox" value="1" class="checkAcertos" aria-label="Checkbox for following text input">
                     </div>
                     <b>1</b>
                 </label>
@@ -130,7 +130,7 @@ function mostrarFiltro(){
               <div class="input-group-prepend">
                 <label>
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input">
+                        <input type="checkbox" value="2" class="checkAcertos" aria-label="Checkbox for following text input">
                     </div>
                     <b>2</b>
                 </label>
@@ -139,7 +139,7 @@ function mostrarFiltro(){
               <div class="input-group-prepend">
                 <label>
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input">
+                        <input type="checkbox" value="3" class="checkAcertos" aria-label="Checkbox for following text input">
                     </div>
                     <b>3</b>
                 </label>
@@ -148,7 +148,7 @@ function mostrarFiltro(){
               <div class="input-group-prepend">
                 <label>
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input">
+                        <input type="checkbox" value="4" class="checkAcertos" aria-label="Checkbox for following text input">
                     </div>
                     <b>4</b>
                 </label>
@@ -157,7 +157,7 @@ function mostrarFiltro(){
               <div class="input-group-prepend">
                 <label>
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input">
+                        <input type="checkbox" value="5" class="checkAcertos" aria-label="Checkbox for following text input">
                     </div>
                     <b>5</b>
                 </label>
@@ -185,12 +185,9 @@ function mostrarFiltro(){
 }
 
 function aplicarFiltro(){
-    while(filtro.firstChild) { 
-        filtro.removeChild(filtro.firstChild); 
-    }
-
     var nome = document.getElementById("iptNome").value;
     var dificuldade = document.getElementById("slctDificuldade").value;
+    
     var dtInicio = document.getElementById("dtInicio").value;
     var dtFinal = document.getElementById("dtFinal").value;
 
@@ -199,9 +196,31 @@ function aplicarFiltro(){
     console.log("Inicio: "+dtInicio);
     console.log("Final: "+dtFinal);
 
+    if (nome == ""){
+
+    } else {
+
+    }
+
+    while(filtro.firstChild) { 
+        filtro.removeChild(filtro.firstChild); 
+    }
 
     getLogQuiz();
-    opcaoDadosSelecionado();
+    
+    const customFilter = (arr, predicate) => {
+        return arr.reduce((acc, item) => {
+            if (predicate(item)) {
+                acc.push(item);
+            }
+            return acc;
+        }, []);
+    };
+    
+    let filtered = customFilter(dadosLogs, log => log.nome == nome);
+    dadosLogs = filtered;
+    
+    opcaoDadosSelecionado(2);
 }
 
 function opcaoAcao(){
