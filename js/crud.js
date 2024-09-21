@@ -31,9 +31,9 @@ function opcaoDadosSelecionado(num){
         }
 
         conteudo.innerHTML += `
-            <button onclick="mostrarFiltro()" class="btn btn-success btn-lg">Filtros</button>
+            <button onclick="mostrarFiltro(1)" class="btn btn-success btn-lg">Filtros</button>
             <br>
-            <br>
+            <div id="filtro"></div>
 
             <table id="tbOutput" class="table">
                 <thead>
@@ -67,7 +67,7 @@ function opcaoDadosSelecionado(num){
         }
 
         conteudo.innerHTML += `
-            <button onclick="mostrarFiltro()" class="btn btn-success btn-lg">Filtros
+            <button onclick="mostrarFiltro(2)" class="btn btn-success btn-lg">Filtros
             </button>
             <br>
             <div id="filtro"></div>
@@ -92,122 +92,62 @@ function opcaoDadosSelecionado(num){
     }
 }
 
-function mostrarFiltro(){
-    filtro.innerHTML =  `
-        <h5>Escolher Nome</h5>
-        <input class="form-control" id="iptNome" type="text" placeholder="Insire o nome que deseja procurar">
-        <br>
+function mostrarFiltro(option){
+    if(option==1){
+        filtro.innerHTML =  `
+            <div id="iptNome"></div>
 
-        <h5>Selecionar Dificuldade</h5>
-        <select id="slctDificuldade" class="form-select" id="slctOpcao">
-            <option value="fácil">Fácil</option>
-            <option value="médio">Médio</option>
-            <option value="difícil">Difícil</option>
-        </select>
-        <br>
+            <h5>Selecionar Dificuldade</h5>
+            <select id="slctDificuldade" class="form-select" id="slctOpcao">
+                <option value="fácil">Fácil</option>
+                <option value="médio">Médio</option>
+                <option value="difícil">Difícil</option>
+            </select>
+            <br>
 
-        <h5>Selecionar Acertos</h5>
-        <center>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
+            <button onclick="aplicarFiltro(1)" class="btn btn-success btn-lg">Salvar</button>
+        `;
+    } else {
+        filtro.innerHTML =  `
+            <h5>Escolher Nome</h5>
+            <input class="form-control" id="iptNome" type="text" placeholder="Insire o nome que deseja procurar">
+            <br>
+
+            <h5>Selecionar Dificuldade</h5>
+            <select id="slctDificuldade" class="form-select" id="slctOpcao">
+                <option value="fácil">Fácil</option>
+                <option value="médio">Médio</option>
+                <option value="difícil">Difícil</option>
+            </select>
+            <br>
+
+            <!--
+            <h5>Selecionar Data</h5>
+            <div class="ls-box-filter">
                 <label>
-                    <div class="input-group-text">
-                        <input type="checkbox" value="0" class="checkAcertos" aria-label="Checkbox for following text input">
-                    </div>
-                    <b>0</b>
+                  <b class="ls-label-text">Período</b>
+                  <input id="dtInicio" type="date">
                 </label>
-              </div>
-
-              <div class="input-group-prepend">
                 <label>
-                    <div class="input-group-text">
-                        <input type="checkbox" value="1" class="checkAcertos" aria-label="Checkbox for following text input">
-                    </div>
-                    <b>1</b>
+                  <b>a</b>
+                  <input id="dtFinal" type="date">
                 </label>
-              </div>
-
-              <div class="input-group-prepend">
-                <label>
-                    <div class="input-group-text">
-                        <input type="checkbox" value="2" class="checkAcertos" aria-label="Checkbox for following text input">
-                    </div>
-                    <b>2</b>
-                </label>
-              </div>
-
-              <div class="input-group-prepend">
-                <label>
-                    <div class="input-group-text">
-                        <input type="checkbox" value="3" class="checkAcertos" aria-label="Checkbox for following text input">
-                    </div>
-                    <b>3</b>
-                </label>
-              </div>
-
-              <div class="input-group-prepend">
-                <label>
-                    <div class="input-group-text">
-                        <input type="checkbox" value="4" class="checkAcertos" aria-label="Checkbox for following text input">
-                    </div>
-                    <b>4</b>
-                </label>
-              </div>
-
-              <div class="input-group-prepend">
-                <label>
-                    <div class="input-group-text">
-                        <input type="checkbox" value="5" class="checkAcertos" aria-label="Checkbox for following text input">
-                    </div>
-                    <b>5</b>
-                </label>
-              </div>
-            </div> 
-        </center>
-
-        <h5>Selecionar Data</h5>
-        <div class="ls-box-filter">
-            <label>
-              <b class="ls-label-text">Período</b>
-              <input id="dtInicio" type="date">
-            </label>
-            <label>
-              <b>a</b>
-              <input id="dtFinal" type="date">
-            </label>
-        </div>
-        <br>
-
-        <button onclick="aplicarFiltro()" class="btn btn-success btn-lg">Salvar</button>
-    `;
-    console.log("funciono");
-        
+            </div>
+            <br>
+            -->
+            <button onclick="aplicarFiltro(2)" class="btn btn-success btn-lg">Salvar</button>
+        `;
+        console.log("funciono");
+    }
 }
 
-function aplicarFiltro(){
+function aplicarFiltro(option){
     var nome = document.getElementById("iptNome").value;
     var dificuldade = document.getElementById("slctDificuldade").value;
     
-    var dtInicio = document.getElementById("dtInicio").value;
-    var dtFinal = document.getElementById("dtFinal").value;
+    // var dtInicio = document.getElementById("dtInicio").value;
+    // var dtFinal = document.getElementById("dtFinal").value;
 
-    console.log("Nome: "+nome);
-    console.log("Dificuldade: "+dificuldade);
-    console.log("Inicio: "+dtInicio);
-    console.log("Final: "+dtFinal);
-
-    if (nome == ""){
-        
-    } else {
-
-    }
-
-    while(filtro.firstChild) { 
-        filtro.removeChild(filtro.firstChild); 
-    }
-
-    getLogQuiz();
-    
     const customFilter = (arr, predicate) => {
         return arr.reduce((acc, item) => {
             if (predicate(item)) {
@@ -216,11 +156,36 @@ function aplicarFiltro(){
             return acc;
         }, []);
     };
+
+    var filtered = '';
+
+    while(filtro.firstChild) { 
+        filtro.removeChild(filtro.firstChild); 
+    }
+
+    if (option == 1){
+        getPerguntasQuiz();
+
+        filtered = customFilter(dadosPerguntas, log => log.nivel == dificuldade);
+        dadosPerguntas = filtered;
+
+        opcaoDadosSelecionado(1);
+
+    } else {
+        getLogQuiz();
     
-    let filtered = customFilter(dadosLogs, log => log.nome == nome);
-    dadosLogs = filtered;
+        if (nome != ""){
+            filtered = customFilter(dadosLogs, log => log.nome == nome);
+            dadosLogs = filtered;
+        } 
+
+        filtered = customFilter(dadosLogs, log => log.nivel == dificuldade);
+        dadosLogs = filtered;
+
+        opcaoDadosSelecionado(2);
+    }
+
     
-    opcaoDadosSelecionado(2);
 }
 
 function opcaoAcao(){
