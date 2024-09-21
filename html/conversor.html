@@ -95,15 +95,18 @@
 </html>
 
 <script>
-    const listaBin = ["0", "1"];
-    const listaOct = ["0", "1", "2", "3", "4", "5", "6", "7"];
-    const listaDec = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    const listaHex = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
+    const lista2 = ["0", "1"];
+    const lista8 = ["0", "1", "2", "3", "4", "5", "6", "7"];
+    const lista10 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const lista16 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
 
     function converter() {
         // Coletar o valor inserido pelo user
-        var input = demo1.value;
+        var input = demo1.value.trim().toLowerCase();
+        console.log(input);
         var arrayInput = input.split("");
+        // Coletar o valor escolhido pelo user no primeiro select
+        var baseInput = Number(valorInformacao.value);
 
         var simboloNegativo = arrayInput.find((element) => element == "-");
         var isNegativo = false;
@@ -113,37 +116,19 @@
             arrayInput = arrayInput.filter((element) => element !== "-");
         }
 
-        // Ver se é "0" ou "1"
-        // Transformar o input em uma array onde cada digito é um elemento, assim tentando encontrar um número que não seja "0" e "1" (listaBin) e retornando a quantidade de elementos que não estão na lista - Caso esteja tudo em ordem, a variável será 0
-        var arrayInputBin = arrayInput.filter((element) => !listaBin.includes(element)).length;
+        var isCharErrado = false;
 
-        // Ver se é entre "0" e "7"
-        // Transformar o input em uma array onde cada digito é um elemento, assim tentando encontrar um número que não esteja entre "0" e "7" (listaOct) e retornando a quantidade de elementos que não estão na lista - Caso esteja tudo em ordem, a variável será 0
-        var arrayInputOct = arrayInput.filter((element) => !listaOct.includes(element)).length;
-
-        // Verificar se é entre "0" e "9"
-        // Transformar o input em uma array onde cada digito é um elemento, assim tentando encontrar um número que não esteja entre "0" e "9" (listaDec) e retornando a quantidade de elementos que não estão na lista - Caso esteja tudo em ordem, a variável será 0
-        var arrayInputDec = arrayInput.filter((element) => !listaDec.includes(element)).length;
-
-        // Ver se é entre "0" e "f"(15)
-        // Transformar o input em uma array onde cada digito é um elemento, assim tentando encontrar um número que não esteja entre "0" e "f" (listaHex) e retornando a quantidade de elementos que não estão na lista - Caso esteja tudo em ordem, a variável será 0
-        var arrayInputHex = arrayInput.filter((element) => !listaHex.includes(element)).length;
-
-        // Coletar o valor escolhido pelo user no primeiro select
-        var baseInput = Number(valorInformacao.value);
-
+        for (i=0; i < arrayInput.length; i++){
+            isCharErrado = !eval("lista"+baseInput).includes(arrayInput[i]);
+            if(isCharErrado){
+                break;
+            }
+        }
+        
         if (input == "") { // caso o usuário não tenha inserido nenhum valor
             alert('Informe um número para realizar a conversão, o campo está vazio!');
-        } else if (baseInput != 16 && isNaN(Number(input))) { // caso a base que o user escolheu seja diferente de 16 e tenha algum número ou caracter especial nele
-            alert(`A base ${baseInput} não possui letras ou caracteres especiais!`);
-        } else if ((baseInput == 2 && arrayInputBin > 0)) { // caso a base que o user escolheu seja 2 e tenha algum numero que seja diferente de 0 e 1
-            alert(`A base Binária não possui caracteres diferentes que 0 e 1!`);
-        } else if ((baseInput == 8 && arrayInputOct > 0)) { // caso a base que o user escolheu seja 8 e tenha algum numero que seja diferente de 0 à 7
-            alert(`A base Octal não possui caracteres que não estejam entre 0 e 7!`);
-        } else if ((baseInput == 16 && arrayInputHex > 0)) { // caso a base que o user escolheu seja 16 e tenha algum numero que seja diferente de 0 à 9 e A à F
-            alert(`A base Hexadecimal não possui caracteres que não estejam entre 0 e f!`);
-        } else if ((baseInput == 10 && arrayInputDec > 0)) { // caso a base que o user escolheu seja 10 e tenha algum numero que seja diferente de 0 à 9
-            alert(`A base Decimal não possui caracteres que não estejam entre 0 e 9!`);
+        } else if(isCharErrado){
+            alert(`A base ${baseInput} não aceita caracteres diferentes de ${eval("lista"+baseInput)}`);
         } else {
             // Transformando qualquer base escolhida em decimal
             var inputBaseDecimal = parseInt(input, baseInput);
@@ -154,9 +139,9 @@
             // Caso for escolhido a opção "Mostrar todos", vai mostrar a conversão de cada um 
             if (baseConverter == 1) {
                 // transformando a base decimal em todas as bases
-                var octal = inputBaseDecimal.toString(8);
-                var hexadecimal = inputBaseDecimal.toString(16);
-                var binaria = inputBaseDecimal.toString(2);
+                var octal = inputBaseDecimal.toString(8).toUpperCase();
+                var hexadecimal = inputBaseDecimal.toString(16).toUpperCase();
+                var binaria = inputBaseDecimal.toString(2).toUpperCase();
 
                 // mostrando todas as bases
                 divOutput.innerHTML = `
@@ -171,7 +156,7 @@
             }
             else {
                 // transformando a base decimal na base escolhida
-                var conversao = inputBaseDecimal.toString(baseConverter);
+                var conversao = inputBaseDecimal.toString(baseConverter).toUpperCase();
                 divOutput.innerHTML = `
                         <h5>A conversão do número ${input} da base ${baseInput} para a base ${baseConverter} é: ${conversao}<br><br>     
                 `;

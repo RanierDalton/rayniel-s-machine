@@ -197,7 +197,7 @@ function aplicarFiltro(){
     console.log("Final: "+dtFinal);
 
     if (nome == ""){
-
+        
     } else {
 
     }
